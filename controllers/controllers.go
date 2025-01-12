@@ -14,6 +14,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func HashPassword(password string) string {
@@ -21,6 +22,15 @@ func HashPassword(password string) string {
 }
 
 func VerifyPassword(userPassword string, givenPassword string) (bool, string) {
+	err := bcrypt.CompareHashAndPassword([]byte(givenPassword), []byte(userPassword))
+	check := true
+	msg := ""
+	if err != nil {
+		msg = fmt.Sprintf("verify password failed line 29 controllers %v", err)
+		log.Panic(msg)
+		check = false
+	}
+	return check, msg
 }
 
 // creating new user [registration]
