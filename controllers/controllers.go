@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os/user"
 	"time"
 
 	"github.com/Blue-Marvel/ecommerce-app/database"
-	"github.com/Blue-Marvel/ecommerce-app/helper"
+	"github.com/Blue-Marvel/ecommerce-app/helpers"
 	"github.com/Blue-Marvel/ecommerce-app/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -60,7 +59,7 @@ func SignUp() gin.HandlerFunc {
 		user.ID = primitive.NewObjectID()
 		user.User_ID = user.ID.Hex()
 
-		token, refreshToken, _ := helper.GenerateAllTokens(*user.Email, *user.First_Name, *user.Last_Name, *&user.User_ID)
+		token, refreshToken, _ := helpers.GenerateAllTokens(*user.Email, *user.First_Name, *user.Last_Name, *&user.User_ID)
 
 		user.Token = &token
 		user.Refresh_Token = &refreshToken
@@ -120,12 +119,12 @@ func Login() gin.HandlerFunc {
 			return
 		}
 
-		token, refresh_token, _ := helper.GenerateAllTokens(*foundUser.Email, *foundUser.First_Name, *foundUser.Last_Name, *&foundUser.User_ID)
+		token, refresh_token, _ := helpers.GenerateAllTokens(*foundUser.Email, *foundUser.First_Name, *foundUser.Last_Name, *&foundUser.User_ID)
 
 		foundUser.Token = &token
 		foundUser.Refresh_Token = &refresh_token
 
-		helper.UpdateAllTokens(token, refresh_token, foundUser.User_ID)
+		helpers.UpdateAllTokens(token, refresh_token, foundUser.User_ID)
 
 		c.JSON(http.StatusOK, foundUser)
 
